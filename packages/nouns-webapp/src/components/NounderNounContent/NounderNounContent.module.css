@@ -4,15 +4,12 @@
   color: var(--brand-dark-green);
   text-decoration: underline;
 }
-
 .link:hover {
   color: var(--brand-dark-red);
 }
 
 .bidRow {
-  font-weight: 500;
-  font-size: 15.5px;
-  line-height: 21px;
+  font-weight: normal !important;
 }
 
 .currentBidCol {

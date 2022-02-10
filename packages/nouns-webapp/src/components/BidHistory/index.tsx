@@ -2,31 +2,30 @@ import React from 'react';
 import ShortAddress from '../ShortAddress';
 import _classes from './BidHistory.module.css';
 import dayjs from 'dayjs';
-import link from '../../assets/icons/Link.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { buildEtherscanTxLink } from '../../utils/etherscan';
 import TruncatedAmount from '../TruncatedAmount';
 import BigNumber from 'bignumber.js';
 import { Bid } from '../../utils/types';
 import { BigNumber as EthersBN } from '@ethersproject/bignumber';
 import { useAuctionBids } from '../../wrappers/onDisplayAuction';
-import { useAppSelector } from '../../hooks';
 
-const bidItem = (bid: Bid, index: number, classes: any, isCool?: boolean) => {
+const bidItem = (bid: Bid, index: number, classes: any) => {
   const bidAmount = <TruncatedAmount amount={new BigNumber(EthersBN.from(bid.value).toString())} />;
   const date = `${dayjs(bid.timestamp.toNumber() * 1000).format('MMM DD')} at ${dayjs(
     bid.timestamp.toNumber() * 1000,
   ).format('hh:mm a')}`;
 
   const txLink = buildEtherscanTxLink(bid.transactionHash);
-  const isMobile = window.innerWidth < 992;
 
   return (
-    <li key={index} className={isCool ? classes.bidRowCool : classes.bidRowWarm}>
+    <li key={index} className={classes.bidRow}>
       <div className={classes.bidItem}>
         <div className={classes.leftSectionWrapper}>
           <div className={classes.bidder}>
             <div>
-              <ShortAddress address={bid.sender} avatar={isMobile ? false : true} />
+              <ShortAddress address={bid.sender} avatar={true} />
             </div>
           </div>
           <div className={classes.bidDate}>{date}</div>
@@ -35,7 +34,7 @@ const bidItem = (bid: Bid, index: number, classes: any, isCool?: boolean) => {
           <div className={classes.bidAmount}>{bidAmount}</div>
           <div className={classes.linkSymbol}>
             <a href={txLink} target="_blank" rel="noreferrer">
-              <img src={link} width={24} alt="link symbol" />
+              <FontAwesomeIcon icon={faExternalLinkAlt} />
             </a>
           </div>
         </div>
@@ -46,13 +45,13 @@ const bidItem = (bid: Bid, index: number, classes: any, isCool?: boolean) => {
 
 const BidHistory: React.FC<{ auctionId: string; max: number; classes?: any }> = props => {
   const { auctionId, max, classes = _classes } = props;
-  const isCool = useAppSelector(state => state.application.isCoolBackground);
+
   const bids = useAuctionBids(EthersBN.from(auctionId));
   const bidContent =
     bids &&
     bids
       .map((bid: Bid, i: number) => {
-        return bidItem(bid, i, classes, isCool);
+        return bidItem(bid, i, classes);
       })
       .slice(0, max);
 

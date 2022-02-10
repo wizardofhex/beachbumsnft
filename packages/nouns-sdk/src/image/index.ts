@@ -10,5 +10,4 @@ export {
   RGBAColor,
   DecodedImage,
   EncodedImage,
-  PngImage,
 } from './types';
